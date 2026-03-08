@@ -1,13 +1,13 @@
 class Node {
-  _value: number | string | null = null;
+  _value: number | null = null;
   _nextNode: Node | null = null;
 
   constructor(val: number | null, next: Node | null = null) {
     this._value = val;
     this._nextNode = next;
-  }
+}
 
-  get value(): number | string | null | undefined { return this._value }
+  get value(): number | null | undefined { return this._value }
   get nextNode(): Node | null | undefined { return this._nextNode }
 
   set value(newValue: number) { this._value = newValue; }
@@ -90,6 +90,44 @@ class LinkedList {
     return -1;
   }
 
+  insertAt(index: number, ...values: number[]) {
+    if (index < 0 || index > this.size()) throw new RangeError("Index out of range");
+    let current: Node = this._head!;
+    let i = 0;
+    
+    while(i < (index - 1)) {
+      if (current?.nextNode) current = current.nextNode;
+      i++;
+    }
+
+    let prev = current!;
+    const oldNext = current.nextNode!;
+    
+    for (const v of values) {
+      const newCurrent: Node = new Node(v);
+      prev._nextNode = newCurrent;
+      prev = newCurrent;
+    }
+    
+    prev.nextNode = oldNext;
+  }
+
+  removeAt(index: number) {
+    if (index < 0 || index > this.size()) throw new RangeError("Index out of range");
+    let current: Node = this._head!;
+    let prev: Node = this._head!;
+    let i = 0;
+    
+    while(i < index) {
+      if (prev) prev = current;
+      if (current?.nextNode) current = current.nextNode;
+      i++;
+    }
+
+    prev._nextNode = current._nextNode;
+    return current?.value;
+  }
+
   toString() {
     let llStr = "";
     let node: Node | null | undefined = this._head;
@@ -105,16 +143,6 @@ class LinkedList {
 const LL = new LinkedList(new Node(1));
 LL.append(2);
 LL.append(3);
-LL.append(4);
-LL.prepend(-1);
-LL.append(5);
-LL.prepend(0);
-LL.append(6);
 console.log(LL.toString());
-console.log(LL.tail());
-console.log(LL.size());
-console.log(LL.at(5));
-console.log(LL.findIndex(3));
-console.log(LL.findIndex(7));
-console.log(LL.contains(4));
-console.log(LL.contains(8));
+LL.insertAt(1, 10, 11, 12, 13);
+console.log(LL.toString());
